@@ -1,4 +1,4 @@
-use std::{cmp::{max, min}, collections::HashMap, error::Error, fs};
+use std::{cmp::{max, min}, collections::HashMap};
 
 fn read_lines(input: &str) -> (Vec<usize>, Vec<usize>) {
     input
@@ -14,7 +14,7 @@ fn read_lines(input: &str) -> (Vec<usize>, Vec<usize>) {
         }).unzip()
 }
 
-fn part1(input: &str) -> usize {
+pub fn part1(input: &str) -> usize {
     let (mut left, mut right) = read_lines(input);
     
     left.sort();
@@ -26,7 +26,7 @@ fn part1(input: &str) -> usize {
         .fold(0, |acc, (a, b)| acc + max(a, b) - min(a, b))
 }
 
-fn part2(input: &str) -> usize {
+pub fn part2(input: &str) -> usize {
     let (left, right) = read_lines(input);
 
     let left_map = left
@@ -44,16 +44,19 @@ fn part2(input: &str) -> usize {
         })
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let input = fs::read_to_string("input.txt")?;
-    dbg!(part1(&input));
-    dbg!(part2(&input));
-    Ok(())
-}
-
 #[cfg(test)]
 mod test {
+    use std::{error::Error, fs};
+
     use super::*;
+
+    #[test]
+    fn run() -> Result<(), Box<dyn Error>> {
+        let input = fs::read_to_string("input.txt")?;
+        dbg!(part1(&input));
+        dbg!(part2(&input));
+        Ok(())
+    }
 
     fn get_input<'a>() -> &'a str {
         "3   4
