@@ -171,6 +171,7 @@ name = "day03"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "regex",
 ]
 
 [[package]]
