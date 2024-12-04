@@ -12,41 +12,25 @@ pub fn part1(input: &str) -> usize {
     let mut count = 0;
     for i in 0..grid.len() {
         for j in 0..grid[i].len() {
+            count +=
             // Right.
-            if j <= grid[i].len() - 4 && (0..4).all(|k| grid[i][j + k] == xmas[k]) {
-                count += 1;
-            }
+            (j <= grid[i].len() - 4 && (0..4).all(|k| grid[i][j + k] == xmas[k])) as usize
             // Up right.
-            if i >= 3 && j <= grid[i].len() - 4 && (0..4).all(|k| grid[i - k][j + k] == xmas[k]) {
-                count += 1;
-            }
+            + (i >= 3 && j <= grid[i].len() - 4 && (0..4).all(|k| grid[i - k][j + k] == xmas[k])) as usize
             // Up.
-            if i >= 3 && (0..4).all(|k| grid[i - k][j] == xmas[k]) {
-                count += 1;
-            }
-            // Up left.
-            if i >= 3 && j >= 3 && (0..4).all(|k| grid[i - k][j - k] == xmas[k]) {
-                count += 1;
-            }
+            + (i >= 3 && (0..4).all(|k| grid[i - k][j] == xmas[k])) as usize
+            // Up Left.
+            + (i >= 3 && j >= 3 && (0..4).all(|k| grid[i - k][j - k] == xmas[k])) as usize
             // Left.
-            if j >= 3 && (0..4).all(|k| grid[i][j - k] == xmas[k]) {
-                count += 1;
-            }
-            // Down left.
-            if i <= grid.len() - 4 && j >= 3 && (0..4).all(|k| grid[i + k][j - k] == xmas[k]) {
-                count += 1;
-            }
+            + (j >= 3 && (0..4).all(|k| grid[i][j - k] == xmas[k])) as usize
+            // Down Left.
+            + (i <= grid.len() - 4 && j >= 3 && (0..4).all(|k| grid[i + k][j - k] == xmas[k])) as usize
             // Down.
-            if i <= grid.len() - 4 && (0..4).all(|k| grid[i + k][j] == xmas[k]) {
-                count += 1;
-            }
+            + (i <= grid.len() - 4 && (0..4).all(|k| grid[i + k][j] == xmas[k])) as usize
             // Down right.
-            if i <= grid.len() - 4 && j <= grid[i].len() - 4 && (0..4).all(|k| grid[i + k][j + k] == xmas[k]) {
-                count += 1;
-            }
+            + (i <= grid.len() - 4 && j <= grid[i].len() - 4 && (0..4).all(|k| grid[i + k][j + k] == xmas[k])) as usize;
         }
     }
-
     count
 }
 
@@ -55,11 +39,10 @@ pub fn part2(input: &str) -> usize {
     let grid = read_grid(input);
     
     let mut count = 0;
-    for i in 0..grid.len() {
-        for j in 0..grid[i].len() {
+    for i in 1..grid.len()-1 {
+        for j in 1..grid[i].len()-1 {
             // Look for MAS in each diagonal centered at grid[i][j].
-            if i >= 1 && i <= grid.len() - 2 && j >= 1 && j <= grid[i].len() - 2 
-            && ((0..3).all(|k| grid[i - 1 + k][j - 1 + k] == mas[k])
+            if ((0..3).all(|k| grid[i - 1 + k][j - 1 + k] == mas[k])
                 || (0..3).all(|k| grid[i - 1 + k][j - 1 + k] == mas[2 - k]))
             && ((0..3).all(|k| grid[i + 1 - k][j - 1 + k] == mas[k])
                 || (0..3).all(|k| grid[i + 1 - k][j - 1 + k] == mas[2 - k])) {
