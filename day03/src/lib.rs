@@ -104,6 +104,37 @@ pub fn part2_single_run(input: &str) -> usize {
     result
 }
 
+pub fn part2_single_regex(input: &str) -> usize {
+    let regex = Regex::new(r"(mul\((\d+),(\d+)\))|(do\(\))|(don\'t\(\))").unwrap();
+    let mut allow_mul = true;
+    regex
+        .find_iter(input)
+        .fold(0, |acc, m| {
+            match m.as_str() {
+                "do()" => {
+                    allow_mul = true;
+                    acc
+                },
+                "don't()" => {
+                    allow_mul = false;
+                    acc
+                },
+                _ => {
+                    if allow_mul {
+                        let vals: Vec<usize> = m
+                            .as_str()[4..m.len() - 1]
+                            .split(',')
+                            .map(|val| val.parse::<usize>().unwrap())
+                            .collect();
+                        acc + vals[0] * vals[1]
+                    } else {
+                        acc
+                    }
+                }
+            }
+        })
+}
+
 #[cfg(test)]
 mod tests {
     use std::{error::Error, fs};
@@ -115,6 +146,8 @@ mod tests {
         let input = fs::read_to_string("input.txt")?;
         dbg!(part1(&input));
         dbg!(part2(&input));
+        dbg!(part2_single_run(&input));
+        dbg!(part2_single_regex(&input));
         Ok(())
     }
 
@@ -127,5 +160,6 @@ mod tests {
     fn part2_test() {
         assert_eq!(part2("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"), 48);
         assert_eq!(part2_single_run("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"), 48);
+        assert_eq!(part2_single_regex("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"), 48);
     }
 }
