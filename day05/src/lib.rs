@@ -65,7 +65,7 @@ pub fn part1(input: &str) -> usize {
 }
 
 /// Topological sort from wikipedia.
-fn center_of_sorted_update(rules: &[(usize, usize)]) -> usize {
+fn center_of_sorted_update(rules: &[(usize, usize)], center_index: usize) -> usize {
     let mut outgoing: HashMap<usize, HashSet<usize>> = rules
         .iter()
         .fold(HashMap::new(), |mut map, rule| {
@@ -84,8 +84,12 @@ fn center_of_sorted_update(rules: &[(usize, usize)]) -> usize {
     let mut queue: VecDeque<usize> = sources.difference(&targets).copied().collect();
 
     let mut sorted_update: Vec<usize> = Vec::new();
+
     while let Some(page) = queue.pop_front() {
         sorted_update.push(page);
+        if sorted_update.len() - 1 == center_index {
+            return *sorted_update.last().unwrap();
+        }
 
         if let Some(neighbors) = outgoing.get(&page) {
             for neighbor in neighbors.iter() {
@@ -100,12 +104,7 @@ fn center_of_sorted_update(rules: &[(usize, usize)]) -> usize {
         outgoing.remove(&page);
     }
 
-    if outgoing.values().flatten().cloned().collect::<HashSet<usize>>().is_empty()
-    && incoming.values().flatten().cloned().collect::<HashSet<usize>>().is_empty() {
-        sorted_update[sorted_update.len() / 2]
-    } else {
-        0
-    }
+    0
 }
 
 pub fn part2(input: &str) -> usize {
@@ -116,7 +115,7 @@ pub fn part2(input: &str) -> usize {
             let order = get_order(&update);
             let subgraph = update_subgraph(&rules, &update);
             if !is_sorted(&subgraph, &order) {
-                acc + center_of_sorted_update(&subgraph)
+                acc + center_of_sorted_update(&subgraph, update.len() / 2)
             } else {
                 acc
             }
