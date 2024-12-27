@@ -7,7 +7,7 @@ fn read_input(input: &str) -> (Vec<&str>, Vec<&str>) {
     lines[1..].iter().map(|design| design.trim()).collect())
 }
 
-fn memoized(patterns: &Vec<&str>, design: &str, cache: &mut HashSet<String>) -> bool {
+fn memoized(patterns: &[&str], design: &str, cache: &mut HashSet<String>) -> bool {
     if design.is_empty() {
         return true;
     }
@@ -36,7 +36,7 @@ pub fn part1(input: &str) -> usize {
         .count()
 }
 
-fn memoized_counting(patterns: &Vec<&str>, design: &str, cache: &mut HashMap<String, usize>) -> usize {
+fn memoized_counting(patterns: &[&str], design: &str, cache: &mut HashMap<String, usize>) -> usize {
     if design.is_empty() {
         return 1;
     }
@@ -54,12 +54,34 @@ fn memoized_counting(patterns: &Vec<&str>, design: &str, cache: &mut HashMap<Str
     *cache.entry(design.to_string()).or_default()
 }
 
+fn tabularized_counting(patterns: &[&str], design: &str) -> usize {
+    let mut table = vec![1; design.len() + 1];
+
+    for i in 1..=design.len() {
+        table[i] = patterns
+            .iter()
+            .filter(|&&pattern| pattern.len() <= i && &design[(i - pattern.len())..i] == pattern)
+            .fold(0, |acc, pattern| acc + table[i - pattern.len()]);
+    }
+
+    table[design.len()]
+}
+
 pub fn part2(input: &str) -> usize {
     let (patterns, designs) = read_input(input);
     designs
         .iter()
         .fold(0, |acc, design| 
             acc + memoized_counting(&patterns, design, &mut HashMap::new())
+        )
+}
+
+pub fn part2_tabularized(input: &str) -> usize {
+    let (patterns, designs) = read_input(input);
+    designs
+        .iter()
+        .fold(0, |acc, design| 
+            acc + tabularized_counting(&patterns, design)
         )
 }
 
@@ -98,5 +120,6 @@ mod tests {
     #[test]
     fn part2_test() {
         assert_eq!(part2(get_input()), 16);
+        assert_eq!(part2_tabularized(get_input()), 16);
     }
 }
