@@ -3,20 +3,19 @@ use std::collections::{HashMap, HashSet, VecDeque};
 fn read_input(input: &str) -> (Vec<(&str, usize)>, Vec<Vec<&str>>) {
     let mut lines = input.lines();
 
-    let mut input_bits = Vec::new();
-    for line in &mut lines {
-        if line.is_empty() {
-            break;
-        }
-        let input_bit: Vec<&str> = line.split_whitespace().collect();
-        input_bits.push((&input_bit[0][..input_bit[0].len() - 1], input_bit[1].parse().unwrap()));
-    }
+    let input_bits = lines
+        .by_ref()
+        .take_while(|line| !line.is_empty())
+        .map(|line| {
+            let input_bit: Vec<&str> = line.split_whitespace().collect();
+            (&input_bit[0][..input_bit[0].len() - 1], input_bit[1].parse().unwrap())
+        })
+        .collect();
 
-    let mut circuit = Vec::new();
-    for line in lines {
-        let split = line.split_whitespace().collect();
-        circuit.push(split);
-    }
+    let circuit = lines
+        .filter(|line| !line.is_empty())
+        .map(|line| line.split_whitespace().collect())
+        .collect();
 
     (input_bits, circuit)
 }
@@ -94,7 +93,8 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let input = read_input(input);
+    // Detect full adders
+    let _input = read_input(input);
     0
 }
 

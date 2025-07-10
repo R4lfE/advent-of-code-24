@@ -13,3 +13,9 @@ criterion = "0.5.1"
 [[bench]]
 name = "benchmark"
 harness = false
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
